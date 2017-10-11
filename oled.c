@@ -51,15 +51,27 @@ int main(void)
 	while((RCC->CFGR & RCC_CFGR_SW_PLL) != RCC_CFGR_SW_PLL);		/* Wait for SYSCLK to be PLL */
 	/************ /CLOCK GENERATION ************/
 
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN; //Enable GPIO B Clock
 	
 	RCC->APB1ENR = 1 << 21; //I2C1 ON
 	
-	GPIOB->AFR[0] |= 4 << 24;
+	GPIOB->AFR[0] |= 4 << 24; //Configure PB6 to alternate function -> I2C(SCL)
 	
-	GPIOB->AFR[1] |= 4 << 4;
+	GPIOB->AFR[1] |= 4 << 4; //Configure PB9 to alternate function -> I2C(SDA)
 	
-	GPIOB->MODER |= 2 << 12 | 2 << 18;
+	GPIOB->MODER |= 2 << 12 | 2 << 18; //PB6 | PB9
+	
+	/*************** I2C Config *******************/
+	
+	I2C1->CR2 |= 16 << 0; //16MHz peri clk
+	
+	I2C1->CCR |= 0x0050; // for 100KHz SM mode
+	
+	I2C1->TRISE |= 0x0011; //17 (1000ns/62.5ns = 16 + 1)
+	
+	I2C1->CR1 |= 1 << 0; // Enable peripheral
+	
+	/************ //I2C config ******************/
 	
 	/*
 	ADC->CCR = 1 << 16; //ADCPRE is set to 4 i.e APB2 / 4 = 21MHz for ADCCLK
