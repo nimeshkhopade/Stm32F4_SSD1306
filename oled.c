@@ -10,6 +10,21 @@ void delay(){
 	}
 }
 
+void i2c_start() {
+	I2C1->CR1 |= 1 << 8; //Start I2C
+	while(!(I2C1->SR1&0x0001));
+}
+
+void i2c_stop() {
+	I2C1->CR1 |= 1 << 9; //Stop I2C
+	while(I2C1->SR2&0x0002);
+}
+
+void i2c_write(unsigned char c) {
+	I2C1->DR = c;
+	while(!(I2C1->SR1 & (1 << 7)));
+}
+
 int main(void)
 {
 	/* Flash settings (see RM0090 rev9, p80) */
@@ -72,6 +87,8 @@ int main(void)
 	I2C1->CR1 |= 1 << 0; // Enable peripheral
 	
 	/************ //I2C config ******************/
+	
+	
 	
 	/*
 	ADC->CCR = 1 << 16; //ADCPRE is set to 4 i.e APB2 / 4 = 21MHz for ADCCLK
