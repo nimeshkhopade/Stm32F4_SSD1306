@@ -20,9 +20,29 @@ void i2c_stop() {
 	while(I2C1->SR2&0x0002);
 }
 
-void i2c_write(unsigned char c) {
-	I2C1->DR = c;
+void i2c_write(int c) {
+	I2C1->DR = c; //send data
 	while(!(I2C1->SR1 & (1 << 7)));
+}
+
+void i2c_addr(unsigned int i) {
+	char res;
+	I2C1->DR |= i | 0; //send addr
+	while(!(I2C1->SR1&0x0002));
+	res = I2C1->SR2;
+}
+
+void oled_cmd(int cmd) {
+	i2c_start();
+	i2c_addr(0x003C);
+	i2c_write(0x0000);
+	i2c_write(cmd);
+	i2c_stop();
+}
+
+void oled_init() {
+	i2c_start();
+	
 }
 
 int main(void)
@@ -88,28 +108,9 @@ int main(void)
 	
 	/************ //I2C config ******************/
 	
+	oled_cmd(0x0000);
 	
-	
-	/*
-	ADC->CCR = 1 << 16; //ADCPRE is set to 4 i.e APB2 / 4 = 21MHz for ADCCLK
-	
-	ADC1->SMPR2 = 6 << 0 | 6 << 3 | 6 << 6; //Sampling time set to 144 cycles for channel 0
-	
-	ADC1->CR1 |= 0 << 24 | 1 << 8; //12bit resolution|Scan Mode
-	
-	ADC1->CR2 = 1 << 0 | 1 << 1 | 1 << 10; // ADON, CONT, EOCS
-	
-	ADC1->SQR3 = 0 << 0; //| 1 << 5 | 2 << 10 ; // put channel number(CH0,CH1,CH2)
-	
-	ADC1->SQR1 = 1 << 20; //L = 1 conversions (single adc conversion)
-	
-	ADC1->CR2 |= ADC_CR2_SWSTART; //start conversion
-	*/
-
 	while(1){
-	/*
-		while(ADC_SR_EOC == 0); //wait for conversion to over.
-	PA0 = ADC1->DR; */
-		
+	
 	} 
 }
