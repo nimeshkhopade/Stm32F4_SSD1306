@@ -27,22 +27,78 @@ void i2c_write(int c) {
 
 void i2c_addr(unsigned int i) {
 	char res;
-	I2C1->DR |= i | 0; //send addr
+	I2C1->DR = i | 0; //send addr
 	while(!(I2C1->SR1&0x0002));
+	res = I2C1->SR1;
 	res = I2C1->SR2;
 }
 
 void oled_cmd(int cmd) {
 	i2c_start();
-	i2c_addr(0x003C<<1);
-	i2c_write(0x0000);
+	i2c_addr(0x3C<<1);
+	i2c_write(0x00);
 	i2c_write(cmd);
 	i2c_stop();
 }
 
-void oled_init() {
-	i2c_start();
+void oled_clear() {
+	int i = 0;
 	
+	oled_cmd(0x21);
+	oled_cmd(0x00);
+	oled_cmd(127);
+	oled_cmd(0x22);
+	oled_cmd(0x00);
+	oled_cmd(0x07);
+	
+	i2c_start();
+	i2c_addr(0x3C << 1);
+	i2c_write(0x40);
+	
+	for(i = 0; i<1024; i++) {
+		i2c_write(0);
+	}
+	
+	oled_cmd(0x21);
+	oled_cmd(0x00);
+	oled_cmd(127);
+	oled_cmd(0x22);
+	oled_cmd(0x00);
+	oled_cmd(0x07);
+	/*
+	i2c_start();
+	i2c_addr(0x3C << 1);
+	i2c_write(0x40);
+	*/
+}
+
+void oled_init() {
+	oled_cmd(0xAE);
+	oled_cmd(0xD5);
+	oled_cmd(0x80);
+	oled_cmd(0xA8);
+	oled_cmd(0x3F);
+	oled_cmd(0xD3);
+	oled_cmd(0x00);
+	oled_cmd(0x40 | 0x00);
+	oled_cmd(0x8D);
+	oled_cmd(0x14);
+	oled_cmd(0x20);
+	oled_cmd(0x00);
+	oled_cmd(0xA0 | 0x1);
+	oled_cmd(0xC8);
+	oled_cmd(0xDA);
+	oled_cmd(0x12);
+	oled_cmd(0x81);
+	oled_cmd(0xCF);
+	oled_cmd(0xD9);
+	oled_cmd(0xF1);
+	oled_cmd(0xDB);
+	oled_cmd(0x80);
+	oled_cmd(0xA4);
+	oled_cmd(0xA6);
+	oled_cmd(0xAF);
+	oled_clear();
 }
 
 int main(void)
@@ -108,7 +164,18 @@ int main(void)
 	
 	/************ //I2C config ******************/
 	
-	oled_cmd(0x0000);
+	oled_init();
+	i2c_start();
+	i2c_addr(0x3C<<1);
+	i2c_write(0x40);
+	i2c_write(0xFF);
+	i2c_stop();
+	
+	i2c_start();
+	i2c_addr(0x3C<<1);
+	i2c_write(0x40);
+	i2c_write(0x0F);
+	i2c_stop();
 	
 	while(1){
 	
