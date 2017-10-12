@@ -34,7 +34,7 @@ void i2c_addr(unsigned int i) {
 
 void oled_cmd(int cmd) {
 	i2c_start();
-	i2c_addr(0x003C);
+	i2c_addr(0x003C<<1);
 	i2c_write(0x0000);
 	i2c_write(cmd);
 	i2c_stop();
@@ -102,7 +102,7 @@ int main(void)
 	
 	I2C1->CCR |= 0x0050; // for 100KHz SM mode
 	
-	I2C1->TRISE |= 0x0011; //17 (1000ns/62.5ns = 16 + 1)
+	I2C1->TRISE = 0x0011; //17 (1000ns/62.5ns = 16 + 1)
 	
 	I2C1->CR1 |= 1 << 0; // Enable peripheral
 	
