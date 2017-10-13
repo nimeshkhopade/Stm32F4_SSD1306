@@ -4,9 +4,9 @@ int i = 0, count = 0,x=0, arr[1000], data=0;
 uint32_t* p;
 void delay(){
 	int j = 0;
-	for(i = 0;i < 50000; i++)
+	for(i = 0;i < 1; i++)
 	{
-		for(j = 0; j < 500; j++){}
+		for(j = 0; j < 1; j++){}
 	}
 }
 
@@ -22,14 +22,15 @@ void i2c_stop() {
 
 void i2c_write(int c) {
 	I2C1->DR = c; //send data
+	delay();
 	while(!(I2C1->SR1 & (1 << 7)));
 }
 
 void i2c_addr(unsigned int i) {
 	char res;
 	I2C1->DR = i | 0; //send addr
+	delay();
 	while(!(I2C1->SR1&0x0002));
-	res = I2C1->SR1;
 	res = I2C1->SR2;
 }
 
@@ -152,6 +153,12 @@ int main(void)
 	
 	GPIOB->MODER |= 2 << 12 | 2 << 18; //PB6 | PB9
 	
+	GPIOB->OTYPER = 1 << 6 | 1 << 9; // Open Drain
+	
+	GPIOB->OSPEEDR |= 1 << 12 | 1 << 18; // Medium Speed
+	
+	GPIOB->PUPDR |= 1 << 12 | 1 << 18; // PULLUP VERY IMPORTANT
+	
 	/*************** I2C Config *******************/
 	
 	I2C1->CR2 |= 16 << 0; //16MHz peri clk
@@ -169,12 +176,7 @@ int main(void)
 	i2c_addr(0x3C<<1);
 	i2c_write(0x40);
 	i2c_write(0xFF);
-	i2c_stop();
-	
-	i2c_start();
-	i2c_addr(0x3C<<1);
-	i2c_write(0x40);
-	i2c_write(0x0F);
+	i2c_write(0xFF);
 	i2c_stop();
 	
 	while(1){

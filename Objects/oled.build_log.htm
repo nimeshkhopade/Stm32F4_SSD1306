@@ -29,12 +29,12 @@ Project File Date:  10/12/2017
 Rebuild target 'Target 1'
 assembling startup_stm32f407xx.s...
 compiling oled.c...
-oled.c(29): warning:  #550-D: variable "res"  was set but never used
+oled.c(30): warning:  #550-D: variable "res"  was set but never used
   	char res;
 oled.c: 1 warning, 0 errors
 compiling system_stm32f4xx.c...
 linking...
-Program Size: Code=1196 RO-data=408 RW-data=0 ZI-data=1632  
+Program Size: Code=1288 RO-data=424 RW-data=52 ZI-data=1636  
 ".\Objects\oled.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
@@ -59,11 +59,11 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: Keil::Device:Startup:2.6.0
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
       Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
       Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
-      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
-      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
 
    * Component: ARM::CMSIS:CORE:5.0.1
 Build Time Elapsed:  00:00:03
